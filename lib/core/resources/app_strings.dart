@@ -1,3 +1,3 @@
 class AppStrings {
-  AppStrings._();
+  const AppStrings._();
 }
