@@ -21,15 +21,25 @@ class GithubUsersScreen extends StatelessWidget {
                 itemCount: users.length,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Image.network(users[index].avatarUrl ?? ''),
-                    title: Text(users[index].login ?? ''),
+                  return Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ListTile(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.network(
+                          users[index].avatarUrl ?? '',
+                        ),
+                      ),
+                      title: Text(users[index].login ?? ''),
+                    ),
                   );
                 },
               );
             },
             error: (error, stck) => const SizedBox(),
-            loading: () => const Center(child: CircularProgressIndicator(),),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }),
       ),
