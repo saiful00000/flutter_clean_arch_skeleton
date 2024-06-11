@@ -16,7 +16,6 @@ class GithubUsersRemoteDataSource implements GithubUsersDatasource {
   Future<List<GithubUser>> getUsers() async {
     try {
       final uri = Uri.parse(ApiUrls.baseUrl + ApiUrls.usersUrl);
-      final headers = {'Authorization': 'Bearer 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'};
 
       final response = await http.get(uri);
 
