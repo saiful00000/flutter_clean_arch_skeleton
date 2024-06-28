@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_skeleton/infrastructure/navigation/route_names.dart';
 import 'package:flutter_clean_skeleton/modules/github_users/presentation/screens/github_users_screen.dart';
-import 'package:flutter_clean_skeleton/modules/todo/presentation/screens/create_todo_screen.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/screens/todo_create_screen.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/screens/todo_list_screen.dart';
 
 class AppNavigator {
