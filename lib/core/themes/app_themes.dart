@@ -16,13 +16,29 @@ class AppThemes {
       bodySmall: TextStyle(color: AppColors.onBackgroundLight),
     ),
     appBarTheme: const AppBarTheme(
-      color: AppColors.primaryLight,
-      titleTextStyle:  TextStyle(color: AppColors.onPrimaryLight, fontSize: 20),
-    ),
+        color: AppColors.primaryLight,
+        titleTextStyle: TextStyle(color: AppColors.onPrimaryLight, fontSize: 20),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        )),
     buttonTheme: ButtonThemeData(
       buttonColor: AppColors.primaryLight,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppValues.borderRadiusSmall),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(AppColors.primaryLight),
+        foregroundColor: WidgetStateProperty.all(AppColors.onPrimaryLight),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(color: AppColors.onPrimaryLight, fontWeight: FontWeight.bold),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppValues.borderRadiusSmall),
+          ),
+        ),
       ),
     ),
     dialogTheme: DialogTheme(
@@ -60,12 +76,26 @@ class AppThemes {
     ),
     appBarTheme: const AppBarTheme(
       color: AppColors.primaryDark,
-      titleTextStyle:  TextStyle(color: AppColors.onPrimaryDark, fontSize: 20),
+      titleTextStyle: TextStyle(color: AppColors.onPrimaryDark, fontSize: 20),
     ),
     buttonTheme: ButtonThemeData(
       buttonColor: AppColors.primaryDark,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppValues.borderRadiusSmall),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(AppColors.primaryDark),
+        foregroundColor: WidgetStateProperty.all(AppColors.onPrimaryDark),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(color: AppColors.onPrimaryDark, fontWeight: FontWeight.bold),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppValues.borderRadiusSmall),
+          ),
+        ),
       ),
     ),
     dialogTheme: DialogTheme(

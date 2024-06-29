@@ -262,6 +262,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  flutter_minimalist:
+    dependency: "direct main"
+    description:
+      name: flutter_minimalist
+      sha256: b467d71d6f3bdd1a2e2473fd04eb7740a105ea3e94ef688f222f359a25de46ed
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   flutter_riverpod:
     dependency: "direct main"
     description:
