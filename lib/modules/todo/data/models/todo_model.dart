@@ -20,8 +20,8 @@ class TodoModel {
     required this.priority,
   });
 
-  /// A necessary factory constructor for creating a new User instance
-  /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.
+  /// A necessary factory constructor for creating a new TodoModel instance
+  /// from a map. Pass the map to the generated `_$TodoModelFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
   factory TodoModel.fromJson(Map<String, dynamic> json) => _$TodoModelFromJson(json);
 

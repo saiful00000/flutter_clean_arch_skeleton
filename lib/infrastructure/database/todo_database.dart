@@ -46,7 +46,41 @@ class TodoDatabase {
   }
 
   Future<void> _onUpgradeDatabase(Database db, int oldVersion, int newVersion,) async {
+    ///TODO: Implement on database upgrade logic
+  }
 
+  Future<int> insertTodo(Map<String, dynamic> todo) async {
+    final db = await database;
+    return await db.insert('todos', todo);
+  }
+
+  Future<int> updateTodo(int id, Map<String, dynamic> todo) async {
+    final db = await database;
+    return await db.update('todos', todo, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteTodo(int id) async {
+    final db = await database;
+    return await db.delete('todos', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<Map<String, dynamic>?> getTodoById(int id) async {
+    final db = await database;
+    final results = await db.query('todos', where: 'id = ?', whereArgs: [id]);
+    if (results.isNotEmpty) {
+      return results.first;
+    }
+    return null;
+  }
+
+  Future<List<Map<String, dynamic>>> getAllTodos() async {
+    final db = await database;
+    return await db.query('todos');
+  }
+
+  Future<List<Map<String, dynamic>>> getPaginatedTodos(int limit, int offset) async {
+    final db = await database;
+    return await db.query('todos', limit: limit, offset: offset);
   }
 
 }

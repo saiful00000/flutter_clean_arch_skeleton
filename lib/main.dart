@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
       navigatorKey: AppNavigator.navKey,
-      initialRoute: RouteNames.githubUsersScreen,
+      initialRoute: RouteNames.todoListScreen,
       onGenerateRoute: AppNavigator.generateRoutes,
       scaffoldMessengerKey: AppNavigator.scaffoldMessengerKey,
     );
