@@ -1,3 +1,4 @@
+import 'package:flutter_clean_skeleton/modules/todo/business/entity/todo.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'todo_model.g.dart';
@@ -9,6 +10,7 @@ class TodoModel {
   String? description;
   int isDone;
   String? dueDate;
+  String? createdAt;
   int priority;
 
   TodoModel({
@@ -17,6 +19,7 @@ class TodoModel {
     required this.description,
     required this.isDone,
     this.dueDate,
+    this.createdAt,
     required this.priority,
   });
 
@@ -29,4 +32,16 @@ class TodoModel {
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$UserToJson`.
   Map<String, dynamic> toJson() => _$TodoModelToJson(this);
+
+  factory TodoModel.fromEntity(Todo e) {
+    return TodoModel(
+      id: e.id,
+      title: e.title,
+      description: e.description,
+      isDone: e.isDone,
+      priority: e.priority,
+      dueDate: e.dueDate,
+      createdAt: e.createdAt,
+    );
+  }
 }

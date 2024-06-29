@@ -3,9 +3,9 @@ import '../entity/todo.dart';
 abstract class TodoRepository {
   Future<List<Todo>> getAllTodo();
 
-  Future<bool> addTodo({required Map<String, dynamic> row});
+  Future<bool> addTodo({required Todo todo});
 
-  Future<bool> updateTodo({required int id, required Map<String, dynamic> row});
+  Future<bool> updateTodo({required Todo todo});
 
-  Future<bool> deleteTodo({required int id});
+  Future<bool> deleteTodo({required Todo todo});
 }

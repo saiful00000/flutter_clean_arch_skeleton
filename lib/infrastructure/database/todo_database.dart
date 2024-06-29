@@ -40,6 +40,7 @@ class TodoDatabase {
         description TEXT,
         isDone INTEGER NOT NULL DEFAULT 0,
         dueDate TEXT,
+        createAt TEXT,
         priority INTEGER NOT NULL DEFAULT 0
       )
     ''');
@@ -54,7 +55,7 @@ class TodoDatabase {
     return await db.insert('todos', todo);
   }
 
-  Future<int> updateTodo(int id, Map<String, dynamic> todo) async {
+  Future<int> updateTodo(int? id, Map<String, dynamic> todo) async {
     final db = await database;
     return await db.update('todos', todo, where: 'id = ?', whereArgs: [id]);
   }

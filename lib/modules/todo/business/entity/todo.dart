@@ -11,6 +11,7 @@ class Todo with _$Todo {
     String? description,
     required int isDone,
     String? dueDate,
+    String? createdAt,
     required int priority,
   }) = _Todo;
 
@@ -21,6 +22,7 @@ class Todo with _$Todo {
       description: e.description,
       isDone: e.isDone,
       dueDate: e.dueDate,
+      createdAt: e.createdAt,
       priority: e.priority,
     );
   }

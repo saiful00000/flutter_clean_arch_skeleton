@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/entity/todo.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/repository/todo_repository.dart';
 import 'package:flutter_clean_skeleton/modules/todo/data/data_sources/todo_data_source.dart';
+import 'package:flutter_clean_skeleton/modules/todo/data/models/todo_model.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
   final TodoDataSource dataSource;
@@ -9,9 +10,11 @@ class TodoRepositoryImpl implements TodoRepository {
   const TodoRepositoryImpl({required this.dataSource});
 
   @override
-  Future<bool> deleteTodo({required int id}) async {
+  Future<bool> deleteTodo({required Todo todo}) async {
     try {
-      final effectedRows = await dataSource.deleteTodo(id: id);
+      if (todo.id == null) return false;
+
+      final effectedRows = await dataSource.deleteTodo(id: todo.id!);
       return effectedRows > 0;
     } catch (error, stck) {
       debugPrint(error.toString());
@@ -35,9 +38,9 @@ class TodoRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<bool> addTodo({required Map<String, dynamic> row}) async {
+  Future<bool> addTodo({required Todo todo}) async {
     try {
-      final insertedRow = await dataSource.insertTodo(row: row);
+      final insertedRow = await dataSource.insertTodo(row: TodoModel.fromEntity(todo).toJson());
       return insertedRow > 0;
     } catch (error, stck) {
       debugPrint(error.toString());
@@ -48,9 +51,14 @@ class TodoRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<bool> updateTodo({required int id, required Map<String, dynamic> row}) async {
+  Future<bool> updateTodo({required Todo todo}) async {
     try {
-      final effectedRows = await dataSource.updateTodo(id: id, row: row);
+      if (todo.id == null) return false;
+
+      final effectedRows = await dataSource.updateTodo(
+        id: todo.id!,
+        row: TodoModel.fromEntity(todo).toJson(),
+      );
       return effectedRows > 0;
     } catch (error, stck) {
       debugPrint(error.toString());
