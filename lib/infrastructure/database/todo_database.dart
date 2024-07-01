@@ -40,7 +40,7 @@ class TodoDatabase {
         description TEXT,
         isDone INTEGER NOT NULL DEFAULT 0,
         dueDate TEXT,
-        createAt TEXT,
+        createdAt TEXT,
         priority INTEGER NOT NULL DEFAULT 0
       )
     ''');

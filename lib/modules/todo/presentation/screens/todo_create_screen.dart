@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_skeleton/modules/todo/business/use_cases/todo_create_use_case.dart';
+import 'package:flutter_clean_skeleton/modules/todo/data/data_sources/todo_local_data_source.dart';
+import 'package:flutter_clean_skeleton/modules/todo/data/repositories/todo_repository_impl.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/controllers/todo_create_controller.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/providers/todo_providers.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/widgets/form_title.dart';
 import 'package:flutter_minimalist/flutter_minimalist.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreateTodoScreen extends StatelessWidget {
+class CreateTodoScreen extends ConsumerWidget {
   CreateTodoScreen({super.key});
+
+  TodoCreateController? _todoCreateController;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -13,7 +19,17 @@ class CreateTodoScreen extends StatelessWidget {
   String description = '';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    _todoCreateController = TodoCreateController(
+      context: context,
+      ref: ref,
+      todoCreateUseCase: TodoCreateUseCase(
+        todoRepository: TodoRepositoryImpl(
+          dataSource: TodoLocalDataSource(),
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -157,7 +173,21 @@ class CreateTodoScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final result = await _todoCreateController?.createTodo(
+                          title: title,
+                          description: description,
+                          priority: ref.read(todoPriorityProvider.notifier).state,
+                          dueDate: ref.read(todoDueDateProvider.notifier).state.toString(),
+                        );
+
+                        if(result == true) {
+                          _formKey.currentState?.reset();
+                          ref.invalidate(todoPriorityProvider);
+                          ref.invalidate(todoDueDateProvider);
+                        }
+
+                      },
                       style: ButtonStyle(
                         padding: WidgetStateProperty.all(
                           const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
