@@ -3,6 +3,7 @@ import 'package:flutter_clean_skeleton/modules/todo/business/use_cases/todo_crea
 import 'package:flutter_clean_skeleton/modules/todo/data/data_sources/todo_local_data_source.dart';
 import 'package:flutter_clean_skeleton/modules/todo/data/repositories/todo_repository_impl.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/controllers/todo_create_controller.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/providers/async_todo_list.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/providers/todo_providers.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/widgets/form_title.dart';
 import 'package:flutter_minimalist/flutter_minimalist.dart';
@@ -174,6 +175,14 @@ class CreateTodoScreen extends ConsumerWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
+
+                        final formValid = _formKey.currentState?.validate();
+
+                        if(formValid == false) {
+                          return;
+                        }
+                        _formKey.currentState?.save();
+
                         final result = await _todoCreateController?.createTodo(
                           title: title,
                           description: description,
@@ -185,6 +194,7 @@ class CreateTodoScreen extends ConsumerWidget {
                           _formKey.currentState?.reset();
                           ref.invalidate(todoPriorityProvider);
                           ref.invalidate(todoDueDateProvider);
+                          ref.refresh(asyncTodoListProvider);
                         }
 
                       },

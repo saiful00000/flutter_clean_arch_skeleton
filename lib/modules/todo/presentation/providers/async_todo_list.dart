@@ -16,6 +16,6 @@ class AsyncTodoList extends _$AsyncTodoList {
   Future<List<Todo>> build() async {
     _repository = TodoRepositoryImpl(dataSource: TodoLocalDataSource());
 
-    return _repository.getAllTodo();
+    return await _repository.getAllTodo();
   }
 }
