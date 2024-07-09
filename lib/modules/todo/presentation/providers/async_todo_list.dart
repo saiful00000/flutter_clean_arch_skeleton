@@ -18,4 +18,10 @@ class AsyncTodoList extends _$AsyncTodoList {
 
     return await _repository.getAllTodo();
   }
+
+  Future<void> refreshTodoList() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async => await _repository.getAllTodo());
+  }
+
 }

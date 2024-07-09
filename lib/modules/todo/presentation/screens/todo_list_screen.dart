@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_skeleton/infrastructure/navigation/app_navigator.dart';
 import 'package:flutter_clean_skeleton/infrastructure/navigation/route_names.dart';
@@ -5,9 +7,14 @@ import 'package:flutter_clean_skeleton/modules/todo/presentation/providers/async
 import 'package:flutter_clean_skeleton/modules/todo/presentation/widgets/todo_list_tile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TodoListScreen extends StatelessWidget {
+class TodoListScreen extends ConsumerStatefulWidget {
   const TodoListScreen({super.key});
 
+  @override
+  ConsumerState<TodoListScreen> createState() => _TodoListScreenState();
+}
+
+class _TodoListScreenState extends ConsumerState<TodoListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +33,7 @@ class TodoListScreen extends StatelessWidget {
 
         return asyncTodoList.when(
           data: (todoList) {
+            log('todo x list length => ${todoList.length}');
             return ListView.builder(
               itemCount: todoList.length,
               physics: const BouncingScrollPhysics(),

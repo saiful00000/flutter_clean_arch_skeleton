@@ -194,7 +194,7 @@ class CreateTodoScreen extends ConsumerWidget {
                           _formKey.currentState?.reset();
                           ref.invalidate(todoPriorityProvider);
                           ref.invalidate(todoDueDateProvider);
-                          ref.refresh(asyncTodoListProvider);
+                          ref.read(asyncTodoListProvider.notifier).refreshTodoList();
                         }
 
                       },
