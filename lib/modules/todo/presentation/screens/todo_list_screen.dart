@@ -1,31 +1,31 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_skeleton/infrastructure/navigation/app_navigator.dart';
 import 'package:flutter_clean_skeleton/infrastructure/navigation/route_names.dart';
+import 'package:flutter_clean_skeleton/modules/todo/business/use_cases/get_todo_list_use_case.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/use_cases/todo_delete_use_case.dart';
 import 'package:flutter_clean_skeleton/modules/todo/data/data_sources/todo_local_data_source.dart';
 import 'package:flutter_clean_skeleton/modules/todo/data/repositories/todo_repository_impl.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/todo_status.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/controllers/todo_delete_controller.dart';
-import 'package:flutter_clean_skeleton/modules/todo/presentation/providers/async_todo_list.dart';
-import 'package:flutter_clean_skeleton/modules/todo/presentation/widgets/todo_list_tile.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TodoListScreen extends ConsumerStatefulWidget {
+import '../blocs/todo_bloc.dart';
+import '../widgets/todo_list_tile.dart';
+
+class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
 
   @override
-  ConsumerState<TodoListScreen> createState() => _TodoListScreenState();
+  State<TodoListScreen> createState() => _TodoListScreenState();
 }
 
-class _TodoListScreenState extends ConsumerState<TodoListScreen> {
+class _TodoListScreenState extends State<TodoListScreen> {
   TodoDeleteController? _todoDeleteController;
 
   @override
   void initState() {
     _todoDeleteController = TodoDeleteController(
       context: context,
-      ref: ref,
       todoDeleteUseCase: TodoDeleteUseCase(
         todoRepository: TodoRepositoryImpl(
           dataSource: TodoLocalDataSource(),
@@ -49,33 +49,43 @@ class _TodoListScreenState extends ConsumerState<TodoListScreen> {
           AppNavigator.navKey.currentState?.pushNamed(RouteNames.createTodoScreen);
         },
       ),
-      body: Consumer(builder: (context, ref, _) {
-        final asyncTodoList = ref.watch(asyncTodoListProvider);
+      body: BlocProvider(
+        create: (context) {
+          return TodoBloc(
+            getTodoListUseCase: GetTodoListUseCase(
+              todoRepository: TodoRepositoryImpl(
+                dataSource: TodoLocalDataSource(),
+              ),
+            ),
+          );
+        },
+        child: BlocBuilder<TodoBloc, TodoState>(
+          builder: (context, state) {
 
-        return asyncTodoList.when(
-          data: (todoList) {
-            log('todo x list length => ${todoList.length}');
-            return ListView.builder(
-              itemCount: todoList.length,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return TodoListTile(
-                  todo: todoList[index],
-                  onDelete: (todo) {
-                    _todoDeleteController?.deleteTodo(todo: todoList[index]);
+            switch (state.status) {
+              case TodoStatus.initial:
+                return const Center(child: CircularProgressIndicator());
+              case TodoStatus.loading:
+                return const Center(child: CircularProgressIndicator());
+              case TodoStatus.error:
+                return Center(child: Text(state.message));
+              case TodoStatus.success:
+                return ListView.builder(
+                  itemCount: state.todos.length,
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return TodoListTile(
+                      todo: state.todos[index],
+                      onDelete: (todo) {
+                        _todoDeleteController?.deleteTodo(todo: state.todos[index]);
+                      },
+                    );
                   },
                 );
-              },
-            );
+            }
           },
-          error: (error, stck) {
-            return const SizedBox();
-          },
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }),
+        ),
+      ),
     );
   }
 }

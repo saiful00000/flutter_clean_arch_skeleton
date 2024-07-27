@@ -1,18 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_skeleton/infrastructure/navigation/app_navigator.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/entity/todo.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/use_cases/todo_create_use_case.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TodoCreateController {
-  final WidgetRef ref;
   final BuildContext context;
   final TodoCreateUseCase todoCreateUseCase;
 
   const TodoCreateController({
     required this.context,
-    required this.ref,
     required this.todoCreateUseCase,
   });
 
