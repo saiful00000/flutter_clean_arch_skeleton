@@ -57,14 +57,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 dataSource: TodoLocalDataSource(),
               ),
             ),
-          );
+          )..add(GetTodoListEvent());
         },
         child: BlocBuilder<TodoBloc, TodoState>(
           builder: (context, state) {
 
             switch (state.status) {
               case TodoStatus.initial:
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator(color: Colors.red,));
               case TodoStatus.loading:
                 return const Center(child: CircularProgressIndicator());
               case TodoStatus.error:
