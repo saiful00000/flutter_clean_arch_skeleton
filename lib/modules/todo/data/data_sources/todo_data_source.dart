@@ -8,4 +8,6 @@ abstract class TodoDataSource {
   Future<int> updateTodo({required int id, required Map<String, dynamic> row});
 
   Future<int> deleteTodo({required int id});
+
+  Future<TodoModel?> getTOdoById({required int id});
 }

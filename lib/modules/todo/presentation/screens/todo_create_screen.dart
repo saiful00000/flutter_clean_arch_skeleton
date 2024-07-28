@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_skeleton/modules/todo/business/use_cases/todo_create_use_case.dart';
-import 'package:flutter_clean_skeleton/modules/todo/data/data_sources/todo_local_data_source.dart';
-import 'package:flutter_clean_skeleton/modules/todo/data/repositories/todo_repository_impl.dart';
-import 'package:flutter_clean_skeleton/modules/todo/presentation/controllers/todo_create_controller.dart';
-import 'package:flutter_clean_skeleton/modules/todo/presentation/widgets/form_title.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_clean_skeleton/modules/todo/business/entity/todo.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/todo_bloc.dart';
 import 'package:flutter_minimalist/flutter_minimalist.dart';
+
+import '../../business/use_cases/get_todo_list_use_case.dart';
+import '../../business/use_cases/todo_create_use_case.dart';
+import '../../data/data_sources/todo_local_data_source.dart';
+import '../../data/repositories/todo_repository_impl.dart';
+import '../widgets/form_title.dart';
 
 class CreateTodoScreen extends StatelessWidget {
   CreateTodoScreen({super.key});
 
-  TodoCreateController? _todoCreateController;
+  final _todoRepository = TodoRepositoryImpl(dataSource: TodoLocalDataSource());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -18,15 +22,6 @@ class CreateTodoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _todoCreateController = TodoCreateController(
-      context: context,
-      todoCreateUseCase: TodoCreateUseCase(
-        todoRepository: TodoRepositoryImpl(
-          dataSource: TodoLocalDataSource(),
-        ),
-      ),
-    );
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -136,9 +131,7 @@ class CreateTodoScreen extends StatelessWidget {
                       lastDate: DateTime.now().add(const Duration(days: 730)),
                     );
 
-                    if (picked != null) {
-
-                    }
+                    if (picked != null) {}
                   },
                   child: Container(
                     width: double.infinity,
@@ -158,35 +151,40 @@ class CreateTodoScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {
-
-                        final formValid = _formKey.currentState?.validate();
-
-                        if(formValid == false) {
-                          return;
-                        }
-                        _formKey.currentState?.save();
-
-                        final result = await _todoCreateController?.createTodo(
-                          title: title,
-                          description: description,
-                          priority: '',
-                          dueDate: '',
-                        );
-
-                        if(result == true) {
-                          _formKey.currentState?.reset();
-
-                        }
-
-                      },
-                      style: ButtonStyle(
-                        padding: WidgetStateProperty.all(
-                          const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                        ),
+                    BlocProvider(
+                      create: (context) => TodoBloc(
+                        todoCreateUseCase: TodoCreateUseCase(todoRepository: _todoRepository),
+                        getTodoListUseCase: GetTodoListUseCase(todoRepository: _todoRepository),
                       ),
-                      child: const Text('Save'),
+                      child: Builder(
+                        builder: (context) {
+                          return ElevatedButton(
+                            onPressed: () async {
+                              final formValid = _formKey.currentState?.validate();
+
+                              if (formValid == false) {
+                                return;
+                              }
+                              _formKey.currentState?.save();
+
+                              final todo = Todo(
+                                title: title,
+                                description: description,
+                                isDone: 0,
+                                priority: 1,
+                              );
+
+                              context.read<TodoBloc>().add(TodoCreateEvent(todo: todo));
+                            },
+                            style: ButtonStyle(
+                              padding: WidgetStateProperty.all(
+                                const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                              ),
+                            ),
+                            child: const Text('Save'),
+                          );
+                        }
+                      ),
                     ),
                   ],
                 ),

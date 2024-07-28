@@ -4,15 +4,17 @@ import '../../../../core/use_cases/async_use_case.dart';
 
 import '../repository/todo_repository.dart';
 
-class TodoCreateUseCase extends AsyncUseCase<bool, Todo> {
+class TodoCreateUseCase extends AsyncUseCase<Todo?, Todo> {
 
   final TodoRepository todoRepository;
 
   TodoCreateUseCase({required this.todoRepository});
 
   @override
-  Future<bool> execute(Todo param) async {
-    return await todoRepository.addTodo(todo: param);
+  Future<Todo?> execute(Todo param) async {
+    final id = await todoRepository.addTodo(todo: param);
+    if (id == null) return null;
+    return await todoRepository.getTodoById(id: id);
   }
 
 }

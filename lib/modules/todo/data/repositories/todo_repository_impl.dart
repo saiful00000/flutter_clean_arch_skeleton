@@ -38,15 +38,15 @@ class TodoRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<bool> addTodo({required Todo todo}) async {
+  Future<int?> addTodo({required Todo todo}) async {
     try {
       final insertedRow = await dataSource.insertTodo(row: TodoModel.fromEntity(todo).toJson());
-      return insertedRow > 0;
+      return insertedRow;
     } catch (error, stck) {
       debugPrint(error.toString());
       debugPrint(stck.toString());
 
-      return false;
+      return null;
     }
   }
 
@@ -65,6 +65,20 @@ class TodoRepositoryImpl implements TodoRepository {
       debugPrint(stck.toString());
 
       return false;
+    }
+  }
+
+  @override
+  Future<Todo?> getTodoById({required int id}) async {
+    try {
+      final todoModel = await dataSource.getTOdoById(id: id);
+      if (todoModel == null) return null;
+      return Todo.fromModel(todoModel);
+    } catch (error, stck) {
+      debugPrint(error.toString());
+      debugPrint(stck.toString());
+
+      return null;
     }
   }
 }

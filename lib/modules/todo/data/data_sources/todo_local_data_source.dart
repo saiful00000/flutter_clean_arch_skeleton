@@ -24,4 +24,11 @@ class TodoLocalDataSource implements TodoDataSource {
     return await TodoDatabase.instance.updateTodo(id, row);
   }
 
+  @override
+  Future<TodoModel?> getTOdoById({required int id}) async {
+    final todoJson = await TodoDatabase.instance.getTodoById(id);
+    if (todoJson == null) return null;
+    return TodoModel.fromJson(todoJson);
+  }
+
 }

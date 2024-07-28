@@ -10,4 +10,12 @@ class TodoState {
     this.todos = const <Todo>[],
     this.message = '',
   });
+
+  TodoState copyWith({TodoStatus? status, List<Todo>? todos, String? message,}) {
+    return TodoState(
+      status: status ?? this.status,
+      todos: todos ?? this.todos,
+      message: message ?? this.message,
+    );
+  }
 }
