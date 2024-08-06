@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_clean_skeleton/infrastructure/navigation/app_navigator.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/entity/todo.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/priority_cubit.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/selected_date_cubit.dart';
@@ -199,6 +200,8 @@ class CreateTodoScreen extends StatelessWidget {
                                 );
 
                                 context.read<TodoBloc>().add(TodoCreateEvent(todo: todo));
+
+                                AppNavigator.navKey.currentState?.pop();
                               },
                               style: ButtonStyle(
                                 padding: WidgetStateProperty.all(

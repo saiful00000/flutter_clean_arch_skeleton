@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_clean_skeleton/core/use_cases/no_param.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/todo_status.dart';
 import 'package:meta/meta.dart';
@@ -21,7 +22,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     required this.getTodoListUseCase,
     required this.todoCreateUseCase,
   }) : super(TodoState()) {
-    on<TodoInitialEvent> (_todoInitial);
     on<GetTodoListEvent>(_getTodoList);
     on<TodoCreateEvent>(_createTodo);
     on<TodoDeleteEvent>(_deleteTodo);
@@ -39,34 +39,25 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   Future<void> _createTodo(TodoCreateEvent event, Emitter<TodoState> emit) async {
     try {
-      add(TodoInitialEvent());
       final createdTodo = await todoCreateUseCase.execute(event.todo);
-      log('created todo: ${createdTodo?.toString()}');
       if (createdTodo != null) {
-        final oldTodos = await getTodoListUseCase.execute(NoParam());
-        oldTodos.insert(0, createdTodo);
-        emit(state.copyWith(todos: oldTodos, status: TodoStatus.success));
+
+        // add(GetTodoListEvent());
       }else {
-        emit(state.copyWith(status: TodoStatus.error, message: 'Todo creation failed.'));
+
       }
     } catch (error, stck) {
-      emit(state.copyWith(status: TodoStatus.error, message: 'Todo creation failed.'));
     }
 
     return;
   }
 
   FutureOr<void> _deleteTodo(TodoDeleteEvent event, Emitter<TodoState> emit) {
-    try {} catch (error, stck) {
-
-    }
-  }
-
-  FutureOr<void> _todoInitial(TodoInitialEvent event, Emitter<TodoState> emit) {
     try {
-      emit(TodoState(message: 'Loading data.', status: TodoStatus.loading));
-    }catch (error, stck) {
 
+    } catch (error, stck) {
+      debugPrint(error.toString());
+      debugPrint(stck.toString());
     }
   }
 }

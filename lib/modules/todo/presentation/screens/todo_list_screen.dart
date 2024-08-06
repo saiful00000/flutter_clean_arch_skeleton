@@ -29,16 +29,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Todos'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          AppNavigator.navKey.currentState?.pushNamed(RouteNames.createTodoScreen);
-        },
-      ),
       body: BlocProvider(
         create: (context) {
           return TodoBloc(
@@ -59,17 +49,35 @@ class _TodoListScreenState extends State<TodoListScreen> {
               case TodoStatus.error:
                 return Center(child: Text(state.message));
               case TodoStatus.success:
-                return ListView.builder(
-                  itemCount: state.todos.length,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return TodoListTile(
-                      todo: state.todos[index],
-                      onDelete: (todo) {
-
-                      },
-                    );
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<TodoBloc>().add(GetTodoListEvent());
                   },
+                  child: Scaffold(
+                    appBar: AppBar(
+                      centerTitle: true,
+                      title: const Text('Todos'),
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                      child: const Icon(Icons.add),
+                      onPressed: () async {
+                        await AppNavigator.navKey.currentState?.pushNamed(RouteNames.createTodoScreen);
+                        context.read<TodoBloc>().add(GetTodoListEvent());
+                      },
+                    ),
+                    body: ListView.builder(
+                      itemCount: state.todos.length,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return TodoListTile(
+                          todo: state.todos[index],
+                          onDelete: (todo) {
+
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 );
             }
           },
