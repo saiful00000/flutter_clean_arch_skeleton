@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_skeleton/modules/todo/business/entity/todo.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/priority_cubit.dart';
+import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/selected_date_cubit.dart';
 import 'package:flutter_clean_skeleton/modules/todo/presentation/blocs/todo_bloc.dart';
 import 'package:flutter_minimalist/flutter_minimalist.dart';
 
@@ -76,75 +78,96 @@ class CreateTodoScreen extends StatelessWidget {
                 16.verticalSpace,
                 const FormTitle(text: 'Priority'),
                 12.verticalSpace,
-                DropdownButtonHideUnderline(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                      ),
-                    ),
-                    child: DropdownButton(
-                      value: null,
-                      isExpanded: true,
-                      items: [
-                        'Low',
-                        'Medium',
-                        'High',
-                      ].map(
-                            (e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 16,
-                              ),
-                              child: Text(
-                                e,
-                                style: TextStyle(
-                                  color: e == 'Low'
-                                      ? Colors.green
-                                      : e == 'Medium'
-                                      ? Colors.orange
-                                      : Colors.red,
-                                ),
-                              ),
+                BlocProvider(
+                  create: (context) => PriorityCubit(),
+                  child: BlocBuilder<PriorityCubit, String>(
+                    builder: (context, state) {
+                      return DropdownButtonHideUnderline(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              width: 1,
                             ),
-                          );
-                        },
-                      ).toList(),
-                      onChanged: (val) {
-                        if (val == null) return;
-                      },
-                    ),
+                          ),
+                          child: DropdownButton(
+                            value: state,
+                            isExpanded: true,
+                            items: [
+                              'Low',
+                              'Medium',
+                              'High',
+                            ].map(
+                                  (e) {
+                                return DropdownMenuItem(
+                                  value: e,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 16,
+                                    ),
+                                    child: Text(
+                                      e,
+                                      style: TextStyle(
+                                        color: e == 'Low'
+                                            ? Colors.green
+                                            : e == 'Medium'
+                                            ? Colors.orange
+                                            : Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ).toList(),
+                            onChanged: (val) {
+                              if (val == null) return;
+                              context.read<PriorityCubit>().setPriority(val);
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 16.verticalSpace,
                 const FormTitle(text: 'End Date'),
                 12.verticalSpace,
-                InkWell(
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 730)),
-                    );
+                BlocProvider(
+                  create: (context) => SelectedDateCubit(),
+                  child: Builder(
+                      builder: (context) {
+                        return InkWell(
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(const Duration(days: 730)),
+                            );
 
-                    if (picked != null) {}
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          width: 1,
-                        )),
-                    child: Text(''),
+                            if (picked != null) {
+                              context.read<SelectedDateCubit>().setDate(picked);
+                            }
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  width: 1,
+                                )),
+                            child: BlocBuilder<SelectedDateCubit, DateTime>(
+                              builder: (context, state) {
+                                return Text(state.toString());
+                              },
+                            ),
+                          ),
+                        );
+                      }
                   ),
                 ),
                 24.verticalSpace,
@@ -152,38 +175,39 @@ class CreateTodoScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     BlocProvider(
-                      create: (context) => TodoBloc(
-                        todoCreateUseCase: TodoCreateUseCase(todoRepository: _todoRepository),
-                        getTodoListUseCase: GetTodoListUseCase(todoRepository: _todoRepository),
-                      ),
+                      create: (context) =>
+                          TodoBloc(
+                            todoCreateUseCase: TodoCreateUseCase(todoRepository: _todoRepository),
+                            getTodoListUseCase: GetTodoListUseCase(todoRepository: _todoRepository),
+                          ),
                       child: Builder(
-                        builder: (context) {
-                          return ElevatedButton(
-                            onPressed: () async {
-                              final formValid = _formKey.currentState?.validate();
+                          builder: (context) {
+                            return ElevatedButton(
+                              onPressed: () async {
+                                final formValid = _formKey.currentState?.validate();
 
-                              if (formValid == false) {
-                                return;
-                              }
-                              _formKey.currentState?.save();
+                                if (formValid == false) {
+                                  return;
+                                }
+                                _formKey.currentState?.save();
 
-                              final todo = Todo(
-                                title: title,
-                                description: description,
-                                isDone: 0,
-                                priority: 1,
-                              );
+                                final todo = Todo(
+                                  title: title,
+                                  description: description,
+                                  isDone: 0,
+                                  priority: 1,
+                                );
 
-                              context.read<TodoBloc>().add(TodoCreateEvent(todo: todo));
-                            },
-                            style: ButtonStyle(
-                              padding: WidgetStateProperty.all(
-                                const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                                context.read<TodoBloc>().add(TodoCreateEvent(todo: todo));
+                              },
+                              style: ButtonStyle(
+                                padding: WidgetStateProperty.all(
+                                  const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                                ),
                               ),
-                            ),
-                            child: const Text('Save'),
-                          );
-                        }
+                              child: const Text('Save'),
+                            );
+                          }
                       ),
                     ),
                   ],

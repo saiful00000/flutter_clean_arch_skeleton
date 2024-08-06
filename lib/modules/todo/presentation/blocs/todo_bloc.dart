@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_clean_skeleton/core/use_cases/no_param.dart';
@@ -40,8 +41,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     try {
       add(TodoInitialEvent());
       final createdTodo = await todoCreateUseCase.execute(event.todo);
+      log('created todo: ${createdTodo?.toString()}');
       if (createdTodo != null) {
-        final oldTodos = state.todos;
+        final oldTodos = await getTodoListUseCase.execute(NoParam());
         oldTodos.insert(0, createdTodo);
         emit(state.copyWith(todos: oldTodos, status: TodoStatus.success));
       }else {
