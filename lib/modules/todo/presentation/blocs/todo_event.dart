@@ -5,6 +5,9 @@ sealed class TodoEvent {
   const TodoEvent();
 }
 
+class TodoInitialEvent extends TodoEvent {
+
+}
 
 /// THe event for getting todo list
 class GetTodoListEvent extends TodoEvent {}
